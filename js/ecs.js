@@ -76,10 +76,13 @@ var ECS = (function()
         // List of all processors.
         this.processors = [];
         
-        // Dictionary associating component name to processors.
-        this.componentProcessors = {};
+        // List of the names for all processors.
+        this.processorNames = [];
         
-        // Dictionary associating processor to a list of entities.
+        // Dictionary of processors to list of component names.
+        this.processorComponents = {};
+        
+        // Dictionary of processors to list of entities.
         this.processorEntities = {};
         
         // The next unique entity ID.
@@ -112,9 +115,39 @@ var ECS = (function()
     */
     ECS.EntityManager.prototype.unregisterComponent = function(name)
     {
+        // Update processors. Since the component type is removed from both the processors' subscriptions and
+        // the entities, nothing will need to be done except if no components remain for the processor, in which case,
+        // all entities will be removed from the subscription.
+        for (var i = 0; i < this.processors.length; i++)
+        {
+            var processor = this.processors[i];
+            
+            // Remove the component from the processor.
+            var index = this.processorComponents[processor].indexOf(name);
+            if (index != -1)
+            {
+                this.processorComponents[processor].splice(index, 1);
+            
+                // If no components remain, remove all entities from this processor.
+                if (this.processorComponents[processor].length == 0)
+                {
+                    this.processorEntities[processor] = [];
+                }
+                else
+                {
+                    // Add all entities that are now matching the aspect.
+                    var matchingEntities = this.getEntitiesByComponents(this.processorComponents[processor]);
+                    for (var k = 0; k < matchingEntities.length; k++)
+                    {
+                        if (this.processorEntities[processor].indexOf(matchingEntities[k]) == -1)
+                            this.processorEntities[processor].push(matchingEntities[k]);
+                    }
+                }
+            }
+        }
+        
         delete this.components[name];
         delete this.componentEntityTable[name];
-        // TODO: Update processors.
     }
     
     
@@ -157,7 +190,16 @@ var ECS = (function()
             this.entities.splice(index, 1);
             this.removedEntities.push(entity);
             
-            // TODO: Update processors.
+            // Update processors.
+            for (var i = 0; i < this.processors.length; i++)
+            {
+                var processor = this.processors[i];
+                var k = this.processorEntities[processor].indexOf(entity);
+                if (k != -1)
+                {
+                    this.processorEntities[processor].splice(k, 1);
+                }
+            }
         }
     }
     
@@ -196,7 +238,7 @@ var ECS = (function()
     */
     ECS.EntityManager.prototype._destroyRemovedEntities = function()
     {
-        for (var i = 0; i < this.removedEntities.length; ++i)
+        for (var i = 0; i < this.removedEntities.length; i++)
         {
             for (var componentName in this.componentEntityTable)
             {
@@ -219,8 +261,39 @@ var ECS = (function()
     */
     ECS.EntityManager.prototype.addComponent = function(entity, componentName)
     {
+        // If this component already exists on the entity, do not add it again.
+        if (entity in this.componentEntityTable[componentName])
+            return;
+        
+        // Create a new component associated with this entity.
         this.componentEntityTable[componentName][entity] = clone(this.components[componentName]);
-        // TODO: Update processors' entity lists.
+        
+        // Update processors' entity lists.
+        for (var i = 0; i < this.processors.length; i++)
+        {
+            var processor = this.processors[i];
+            
+            // Do not add this entity if it is already in the processor's entity list.
+            if (this.processorEntities[processor].indexOf(entity) != -1)
+                continue;
+            
+            // Check whether this entity has all the components required to be part of the processor's entity list.
+            var pass = true;
+            for (var k = 0; k < this.processorComponents[processor].length; k++)
+            {
+                if (!(entity in this.componentEntityTable[this.processorComponents[processor][k]]))
+                {
+                    pass = false;
+                    break;
+                }
+            }
+            
+            if (pass)
+            {
+                this.processorEntities[processor].push(entity);
+            }
+        }
+        
         // TODO: Notify component observers.
     }
     
@@ -247,7 +320,18 @@ var ECS = (function()
     ECS.EntityManager.prototype.removeComponent = function(entity, componentName)
     {
         delete this.componentEntityTable[componentName][entity];
-        // TODO: Update processors' entity lists.
+        
+        // Update processors' entity lists.
+        for (var i = 0; i < this.processors.length; i++)
+        {
+            var processor = this.processors[i];
+            if (this.processorComponents[processor].indexOf(componentName) != -1)
+            {
+                var index = this.processorEntities[processor].indexOf(entity);
+                this.processorEntities[processor].splice(index, 1);
+            }
+        }
+        
         // TODO: Notify component observers.
     }
     
@@ -311,7 +395,8 @@ var ECS = (function()
     ECS.EntityManager.prototype.registerProcessor = function(processor, componentNames)
     {
         this.processors.push(processor);
-        // TODO: Add all entities with the right components to this processor.
+        this.processorComponents[processor] = componentNames;
+        this.processorEntities[processor] = this.getEntitiesByComponents(this.processorComponents[processor]);
     }
     
     /**
@@ -322,6 +407,8 @@ var ECS = (function()
     ECS.EntityManager.prototype.unregisterProcessor = function(processor)
     {
         this.processors.splice(this.processors.indexOf(processor), 1);
+        delete this.processorComponents[processor];
+        delete this.processorEntities[processor];
     }
     
     /**
@@ -331,7 +418,7 @@ var ECS = (function()
     */
     ECS.EntityManager.prototype.getEntitiesByProcessor = function(processor)
     {
-        
+        return this.processorEntities[processor];
     }
     
     /**
@@ -340,8 +427,9 @@ var ECS = (function()
     ECS.EntityManager.prototype.update = function()
     {
         this._destroyRemovedEntities();
-        for (var processor in this.processors)
+        for (var i = 0; i < this.processors.length; i++)
         {
+            var processor = this.processors[i];
             processor.update();
             this._destroyRemovedEntities();
         }
