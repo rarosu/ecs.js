@@ -1,4 +1,4 @@
-# ecs.js 1.0.0
+# ecs.js 1.0.1
 
 An entity component framework for JavaScript. Main features include:
 
