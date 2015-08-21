@@ -85,6 +85,15 @@ var ECS = (function()
         // List (accessed by processor index) of lists of entities.
         this.processorEntities = [];
         
+        // List of observers interested in added/removed components.
+        this.componentObservers = [];
+        
+        // List (accessed by component observer index) of lists of component names. What components the observer is interested in.
+        this.componentObserverComponents = [];
+        
+        // List of entity observers interested in created/removed entities.
+        this.entityObservers = [];
+        
         // The next unique entity ID.
         this.uid = 0;
     }
@@ -115,9 +124,7 @@ var ECS = (function()
     */
     ECS.EntityManager.prototype.unregisterComponent = function(name)
     {
-        // Update processors. Since the component type is removed from both the processors' subscriptions and
-        // the entities, nothing will need to be done except if no components remain for the processor, in which case,
-        // all entities will be removed from the subscription.
+        // Update processors.
         for (var i = 0; i < this.processors.length; i++)
         {
             // Remove the component from the processor.
@@ -126,7 +133,7 @@ var ECS = (function()
             {
                 this.processorComponents[i].splice(componentIndex, 1);
             
-                // If no components remain, remove all entities from this processor.
+                // If no components remain, remove all entities from this processor since we cannot subscribe to entities without components.
                 if (this.processorComponents[i].length == 0)
                 {
                     this.processorEntities[i] = [];
@@ -142,6 +149,24 @@ var ECS = (function()
                     }
                 }
             }
+        }
+        
+        // Notify the component observers.
+        for (var i = 0; i < this.componentObserverComponents.length; i++)
+        {
+            if (this.componentObserverComponents[i].indexOf(name) != -1)
+            {
+                for (var entity in this.componentEntityTable[name])
+                {
+                    this.componentObservers[i].componentRemoved(entity, name);
+                }
+            }
+        }
+        
+        // Remove the component type from the component observers.
+        for (var i = 0; i < this.componentObservers.length; i++)
+        {
+            this.componentObserverComponents[i].splice(this.componentObserverComponents[i].indexOf(name), 1);
         }
         
         delete this.components[name];
@@ -170,7 +195,11 @@ var ECS = (function()
             }
         }
         
-        // TODO: Notify entity observers of the new entity.
+        // Notify entity observers of the new entity.
+        for (var i = 0; i < this.entityObservers.length; i++)
+        {
+            this.entityObservers[i].entityCreated(id);
+        }
         
         return id;
     }
@@ -196,6 +225,27 @@ var ECS = (function()
                 {
                     this.processorEntities[i].splice(processorEntityIndex, 1);
                 }
+            }
+            
+            // Notify the component observers.
+            for (var componentName in this.componentEntityTable)
+            {
+                if (entity in this.componentEntityTable[componentName])
+                {
+                    for (var i = 0; i < this.componentObserverComponents.length; ++i)
+                    {
+                        if (this.componentObserverComponents[i].indexOf(componentName) != -1)
+                        {
+                            this.componentObservers[i].componentRemoved(entity, componentName);
+                        }
+                    }
+                }
+            }
+            
+            // Notify the entity observers.
+            for (var i = 0; i < this.entityObservers.length; i++)
+            {
+                this.entityObservers[i].entityRemoved(entity);
             }
         }
     }
@@ -289,7 +339,14 @@ var ECS = (function()
             }
         }
         
-        // TODO: Notify component observers.
+        // Notify component observers.
+        for (var i = 0; i < this.componentObserverComponents.length; i++)
+        {
+            if (this.componentObserverComponents[i].indexOf(componentName) != -1)
+            {
+                this.componentObservers[i].componentAdded(entity, componentName);
+            }
+        }
     }
     
     /**
@@ -326,7 +383,14 @@ var ECS = (function()
             }
         }
         
-        // TODO: Notify component observers.
+        // Notify component observers.
+        for (var i = 0; i < this.componentObserverComponents.length; i++)
+        {
+            if (this.componentObserverComponents[i].indexOf(componentName) != -1)
+            {
+                this.componentObservers[i].componentRemoved(entity, componentName);
+            }
+        }
     }
     
     /**
@@ -337,8 +401,6 @@ var ECS = (function()
     */
     ECS.EntityManager.prototype.getComponent = function(entity, componentName)
     {
-        // TODO: Handle case of non-existing component type?
-        // TODO: Handle case of component not on entity?
         return this.componentEntityTable[componentName][entity];
     }
     
@@ -430,6 +492,75 @@ var ECS = (function()
         }
     }
     
+    // OBSERVER METHODS //
+    /**
+        Registers an entity observer interested in created/removed entities.
+        
+        @param {object} observer - The entity observer object. Needs entityCreated(uid) and entityRemoved(uid) methods.
+    */
+    ECS.EntityManager.prototype.registerEntityObserver = function(observer)
+    {
+        this.entityObservers.push(observer);
+    }
+    
+    /**
+        Unregisters an entity observer. This observer will no longer have its methods called.
+        
+        @param {object} observer - The registered entity observer object.
+    */
+    ECS.EntityManager.prototype.unregisterEntityObserver = function(observer)
+    {
+        this.entityObservers.splice(this.entityObservers.indexOf(observer));
+    }
+    
+    /**
+        Registers a component observer interested in added/removed components.
+        
+        @param {object} observer - The component observer object. Needs componentAdded(entity, componentName) and componentRemoved(entity, componentName).
+        @param {array} componentNames - The component types this observer is interested in. Components of other types added/removed will not call the methods.
+    */
+    ECS.EntityManager.prototype.registerComponentObserver = function(observer, componentNames)
+    {
+        this.componentObservers.push(observer);
+        this.componentObserverComponents.push(componentNames);
+    }
+    
+    /**
+        Unregisters a component observer. This observer will no longer have its methods called.
+        
+        @param {object} observer - The registered entity observer object.
+    */
+    ECS.EntityManager.prototype.unregisterComponentObserver = function(observer)
+    {
+        var index = this.componentObservers.indexOf(observer);
+        this.componentObservers.splice(index, 1);
+        this.componentObserverComponents.splice(index, 1);
+    }
+    
+    /**
+        Add an additional component type of interest to a component observer. It will have its methods called when a
+        component of this type is added/removed.
+        
+        @param {object} observer - The registered entity observer object.
+        @param {string} name - The name of the component type to add.
+    */
+    ECS.EntityManager.prototype.addComponentObserverComponent = function(observer, componentName)
+    {
+        this.componentObserverComponents[this.componentObservers.indexOf(observer)].push(componentName);
+    }
+    
+    /**
+        Remove a component type from the interest of this component observer. It will no longer have its methods called when a
+        component of this type is added/removed.
+        
+        @param {object} observer - The registered entity observer object.
+        @param {string} name - The name of the component type to remove.
+    */
+    ECS.EntityManager.prototype.removeComponentObserverComponent = function(observer, componentName)
+    {
+        var index = this.componentObserverComponents[this.componentObservers.indexOf(observer)].indexOf(componentName);
+        this.componentObserverComponents[this.componentObservers.indexOf(observer)].splice(index, 1);
+    }
     
     
     /**
