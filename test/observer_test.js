@@ -1,7 +1,5 @@
 var expect = chai.expect;
 
-
-
 describe('Observer', function() {
     describe('registerEntityObserver', function() {
         it('should notify after registration', function() {
@@ -156,6 +154,18 @@ describe('Observer', function() {
             
             expect(entityManager.componentObserverComponents[0].length).to.equal(1);
         });
+        
+        it('should have valid components when notifying observers', function() {
+            var entityManager = new ECS.EntityManager();
+            entityManager.registerComponent('Transform', Transform);
+            
+            var componentObserver = new ComponentObserverValidity(entityManager);
+            entityManager.registerComponentObserver(componentObserver, ['Transform']);
+            
+            var entity = entityManager.createEntity();
+            
+            entityManager.unregisterComponent('Transform');
+        });
     });
     
     describe('createEntity', function() {
@@ -185,6 +195,17 @@ describe('Observer', function() {
             expect(entity1 in componentObserver.componentsAdded).to.equal(false);
             expect(componentObserver.componentsAdded[entity2].length).to.equal(1);
             expect(componentObserver.componentsAdded[entity3].length).to.equal(1);
+        });
+        
+        it('should have valid components when notifying observers', function() {
+            var entityManager = new ECS.EntityManager();
+            entityManager.registerComponent('Transform', Transform);
+            entityManager.registerComponent('Renderable', Renderable);
+            
+            entityManager.registerEntityObserver(new EntityObserverValidity(entityManager, ['Transform', 'Renderable']));
+            entityManager.registerComponentObserver(new ComponentObserverValidity(entityManager), ['Transform', 'Renderable']);
+            
+            var entity = entityManager.createEntity(['Transform', 'Renderable']);
         });
     });
     
@@ -221,6 +242,18 @@ describe('Observer', function() {
             expect(componentObserver.componentsRemoved[entity2].length).to.equal(1);
             expect(componentObserver.componentsRemoved[entity3].length).to.equal(1);
         });
+        
+        it('should have valid components when notifying observers', function() {
+            var entityManager = new ECS.EntityManager();
+            entityManager.registerComponent('Transform', Transform);
+            entityManager.registerComponent('Renderable', Renderable);
+            
+            entityManager.registerEntityObserver(new EntityObserverValidity(entityManager, ['Transform', 'Renderable']));
+            entityManager.registerComponentObserver(new ComponentObserverValidity(entityManager), ['Transform', 'Renderable']);
+            
+            var entity = entityManager.createEntity(['Transform', 'Renderable']);
+            entityManager.removeEntity(entity);
+        });
     });
     
     describe('addComponent', function() {
@@ -241,8 +274,17 @@ describe('Observer', function() {
             expect(componentObserver.componentsAdded[entity1].length).to.equal(1);
             expect(componentObserver.componentsAdded[entity2].length).to.equal(1);
             expect(componentObserver.componentsAdded[entity3].length).to.equal(1);
+        });
+        
+        it('should have valid components when notifying observers', function() {
+            var entityManager = new ECS.EntityManager();
+            entityManager.registerComponent('Transform', Transform);
+            entityManager.registerComponent('Renderable', Renderable);
             
+            entityManager.registerComponentObserver(new ComponentObserverValidity(entityManager), ['Transform']);
             
+            var entity = entityManager.createEntity();
+            entityManager.addComponent(entity, 'Transform');
         });
     });
     
@@ -267,6 +309,17 @@ describe('Observer', function() {
             expect(entity1 in componentObserver.componentsRemoved).to.equal(false);
             expect(componentObserver.componentsRemoved[entity2].length).to.equal(1);
             expect(componentObserver.componentsRemoved[entity3].length).to.equal(1);
+        });
+        
+        it('should have valid components when notifying observers', function() {
+            var entityManager = new ECS.EntityManager();
+            entityManager.registerComponent('Transform', Transform);
+            entityManager.registerComponent('Renderable', Renderable);
+            
+            entityManager.registerComponentObserver(new ComponentObserverValidity(entityManager), ['Transform']);
+            
+            var entity = entityManager.createEntity(['Transform']);
+            entityManager.removeComponent(entity, 'Transform');
         });
     });
 });

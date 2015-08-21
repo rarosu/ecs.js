@@ -216,7 +216,7 @@ var ECS = (function()
     {
         var id = this.uid++;
         this.entities.push(id);
-        
+
         // Add components to the entity.
         if (componentNames)
         {
@@ -245,6 +245,7 @@ var ECS = (function()
         var index = this.entities.indexOf(entity);
         if (index != -1)
         {
+            // Remove the entity.
             this.entities.splice(index, 1);
             this.removedEntities.push(entity);
             
@@ -402,8 +403,6 @@ var ECS = (function()
     */
     ECS.EntityManager.prototype.removeComponent = function(entity, componentName)
     {
-        delete this.componentEntityTable[componentName][entity];
-        
         // Update processors' entity lists.
         for (var i = 0; i < this.processors.length; i++)
         {
@@ -422,6 +421,9 @@ var ECS = (function()
                 this.componentObservers[i].componentRemoved(entity, componentName);
             }
         }
+        
+        // Remove the component from the entity.
+        delete this.componentEntityTable[componentName][entity];
     }
     
     /**
