@@ -1,5 +1,4 @@
 # ecs.js 1.0.0
-==
 
 An entity component framework for JavaScript. Main features include:
 
@@ -7,11 +6,11 @@ An entity component framework for JavaScript. Main features include:
 - Entity and component observers can be added to know when entities or components are added and removed.
 - Remove safety. Entities are not destroyed until after a processor is done updating, to avoid invalid references.
 
-# Installation
+## Installation
 
 Copy the file ecs.js into your document structure.
 
-# Usage
+## Usage
 
 A simple usage example:
 
@@ -54,7 +53,7 @@ component.some_data = 'Hello world';
 entityManager.update();
 ```
 
-# Compiling the documentation
+## Compiling the documentation
 
 Download and install jsdoc3:
 
