@@ -72,6 +72,27 @@ describe('Processor', function() {
             expect(entityManager.componentEntityTable['Transform'][entity5].y).to.equal(15);
             expect(entityManager.componentEntityTable['Renderable'][entity5].VAO).to.equal(4);
         });
+        
+        it('should be able to register multiple processors at any time', function() {
+            var entityManager = new ECS.EntityManager();
+            entityManager.registerComponent('Transform', Transform);
+            entityManager.registerComponent('Renderable', Renderable);
+            entityManager.registerComponent('Route', Route);
+            
+            entityManager.registerProcessor(new RenderingProcessor(entityManager), ['Transform', 'Renderable']);
+            
+            var entity1 = entityManager.createEntity();
+            var entity2 = entityManager.createEntity(['Transform']);
+            var entity3 = entityManager.createEntity(['Renderable']);
+            var entity4 = entityManager.createEntity(['Transform', 'Renderable']);
+            var entity5 = entityManager.createEntity(['Transform', 'Renderable', 'Route']);
+            
+            entityManager.registerProcessor(new RenderingProcessor(entityManager), ['Transform', 'Renderable']);
+            
+            expect(entityManager.processors.length).to.equal(2);
+            expect(entityManager.processorEntities[0].length).to.equal(2);
+            expect(entityManager.processorEntities[1].length).to.equal(2);
+        });
     });
     
     describe('unregisterProcessor', function() {
@@ -138,11 +159,11 @@ describe('Processor', function() {
             var processor = new PhysicsProcessor(entityManager);
             entityManager.registerProcessor(processor, ['Transform']);
             
-            expect(entityManager.processorEntities[processor].length).to.equal(2);
+            expect(entityManager.processorEntities[0].length).to.equal(2);
             
             entityManager.unregisterComponent('Transform');
             
-            expect(entityManager.processorEntities[processor].length).to.equal(0);
+            expect(entityManager.processorEntities[0].length).to.equal(0);
         });
         
         it('should still have all entities unless the resulting aspect is empty', function() {
@@ -158,11 +179,11 @@ describe('Processor', function() {
             var processor = new PhysicsProcessor(entityManager);
             entityManager.registerProcessor(processor, ['Transform', 'Renderable']);
             
-            expect(entityManager.processorEntities[processor].length).to.equal(3);
+            expect(entityManager.processorEntities[0].length).to.equal(3);
             
             entityManager.unregisterComponent('Renderable');
             
-            expect(entityManager.processorEntities[processor].length).to.equal(3);
+            expect(entityManager.processorEntities[0].length).to.equal(3);
         });
     });
     
@@ -180,7 +201,7 @@ describe('Processor', function() {
             var entity2 = entityManager.createEntity(['Transform', 'Renderable']);
             var entity3 = entityManager.createEntity(['Transform', 'Renderable', 'Route']);
             
-            expect(entityManager.processorEntities[processor].length).to.equal(2);
+            expect(entityManager.processorEntities[0].length).to.equal(2);
         });
     });
     
@@ -198,12 +219,12 @@ describe('Processor', function() {
             var entity2 = entityManager.createEntity(['Transform', 'Renderable']);
             var entity3 = entityManager.createEntity(['Transform', 'Renderable', 'Route']);
             
-            expect(entityManager.processorEntities[processor].length).to.equal(2);
+            expect(entityManager.processorEntities[0].length).to.equal(2);
             
             entityManager.removeEntity(entity1);
             entityManager.removeEntity(entity2);
             
-            expect(entityManager.processorEntities[processor].length).to.equal(1);
+            expect(entityManager.processorEntities[0].length).to.equal(1);
         });
     });
     
@@ -224,13 +245,43 @@ describe('Processor', function() {
             var entity2 = entityManager.createEntity(['Transform', 'Renderable']);
             var entity3 = entityManager.createEntity(['Transform', 'Renderable', 'Route']);
             
-            expect(entityManager.processorEntities[processor1].length).to.equal(3);
-            expect(entityManager.processorEntities[processor2].length).to.equal(2);
+            expect(entityManager.processorEntities[0].length).to.equal(3);
+            expect(entityManager.processorEntities[1].length).to.equal(2);
             
             entityManager.addComponent(entity1, 'Renderable');
             
-            expect(entityManager.processorEntities[processor1].length).to.equal(3);
-            expect(entityManager.processorEntities[processor2].length).to.equal(3);
+            expect(entityManager.processorEntities[0].length).to.equal(3);
+            expect(entityManager.processorEntities[1].length).to.equal(3);
         });
     });
+    
+    describe('removeComponent', function() {
+        it('should remove entities no longer matching the aspect', function() {
+            var entityManager = new ECS.EntityManager();
+            entityManager.registerComponent('Transform', Transform);
+            entityManager.registerComponent('Renderable', Renderable);
+            entityManager.registerComponent('Route', Route);
+            
+            var processor1 = new PhysicsProcessor(entityManager);
+            entityManager.registerProcessor(processor1, ['Transform']);
+            
+            var processor2 = new RenderingProcessor(entityManager);
+            entityManager.registerProcessor(processor2, ['Transform', 'Renderable']);
+            
+            var entity1 = entityManager.createEntity(['Transform']);
+            var entity2 = entityManager.createEntity(['Transform', 'Renderable']);
+            var entity3 = entityManager.createEntity(['Transform', 'Renderable', 'Route']);
+            
+            expect(entityManager.processorEntities[0].length).to.equal(3);
+            expect(entityManager.processorEntities[1].length).to.equal(2);
+            
+            entityManager.removeComponent(entity2, 'Renderable');
+            entityManager.removeComponent(entity3, 'Route');
+            
+            expect(entityManager.processorEntities[0].length).to.equal(3);
+            expect(entityManager.processorEntities[1].length).to.equal(1);
+        });
+    });
+    
+    
 });

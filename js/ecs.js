@@ -79,11 +79,11 @@ var ECS = (function()
         // List of the names for all processors.
         this.processorNames = [];
         
-        // Dictionary of processors to list of component names.
-        this.processorComponents = {};
+        // List (accessed by processor index) of lists of component names.
+        this.processorComponents = [];
         
-        // Dictionary of processors to list of entities.
-        this.processorEntities = {};
+        // List (accessed by processor index) of lists of entities.
+        this.processorEntities = [];
         
         // The next unique entity ID.
         this.uid = 0;
@@ -120,27 +120,25 @@ var ECS = (function()
         // all entities will be removed from the subscription.
         for (var i = 0; i < this.processors.length; i++)
         {
-            var processor = this.processors[i];
-            
             // Remove the component from the processor.
-            var index = this.processorComponents[processor].indexOf(name);
-            if (index != -1)
+            var componentIndex = this.processorComponents[i].indexOf(name);
+            if (componentIndex != -1)
             {
-                this.processorComponents[processor].splice(index, 1);
+                this.processorComponents[i].splice(componentIndex, 1);
             
                 // If no components remain, remove all entities from this processor.
-                if (this.processorComponents[processor].length == 0)
+                if (this.processorComponents[i].length == 0)
                 {
-                    this.processorEntities[processor] = [];
+                    this.processorEntities[i] = [];
                 }
                 else
                 {
                     // Add all entities that are now matching the aspect.
-                    var matchingEntities = this.getEntitiesByComponents(this.processorComponents[processor]);
+                    var matchingEntities = this.getEntitiesByComponents(this.processorComponents[i]);
                     for (var k = 0; k < matchingEntities.length; k++)
                     {
-                        if (this.processorEntities[processor].indexOf(matchingEntities[k]) == -1)
-                            this.processorEntities[processor].push(matchingEntities[k]);
+                        if (this.processorEntities[i].indexOf(matchingEntities[k]) == -1)
+                            this.processorEntities[i].push(matchingEntities[k]);
                     }
                 }
             }
@@ -193,11 +191,10 @@ var ECS = (function()
             // Update processors.
             for (var i = 0; i < this.processors.length; i++)
             {
-                var processor = this.processors[i];
-                var k = this.processorEntities[processor].indexOf(entity);
-                if (k != -1)
+                var processorEntityIndex = this.processorEntities[i].indexOf(entity);
+                if (processorEntityIndex != -1)
                 {
-                    this.processorEntities[processor].splice(k, 1);
+                    this.processorEntities[i].splice(processorEntityIndex, 1);
                 }
             }
         }
@@ -271,17 +268,15 @@ var ECS = (function()
         // Update processors' entity lists.
         for (var i = 0; i < this.processors.length; i++)
         {
-            var processor = this.processors[i];
-            
             // Do not add this entity if it is already in the processor's entity list.
-            if (this.processorEntities[processor].indexOf(entity) != -1)
+            if (this.processorEntities[i].indexOf(entity) != -1)
                 continue;
             
             // Check whether this entity has all the components required to be part of the processor's entity list.
             var pass = true;
-            for (var k = 0; k < this.processorComponents[processor].length; k++)
+            for (var k = 0; k < this.processorComponents[i].length; k++)
             {
-                if (!(entity in this.componentEntityTable[this.processorComponents[processor][k]]))
+                if (!(entity in this.componentEntityTable[this.processorComponents[i][k]]))
                 {
                     pass = false;
                     break;
@@ -290,7 +285,7 @@ var ECS = (function()
             
             if (pass)
             {
-                this.processorEntities[processor].push(entity);
+                this.processorEntities[i].push(entity);
             }
         }
         
@@ -324,11 +319,10 @@ var ECS = (function()
         // Update processors' entity lists.
         for (var i = 0; i < this.processors.length; i++)
         {
-            var processor = this.processors[i];
-            if (this.processorComponents[processor].indexOf(componentName) != -1)
+            if (this.processorComponents[i].indexOf(componentName) != -1)
             {
-                var index = this.processorEntities[processor].indexOf(entity);
-                this.processorEntities[processor].splice(index, 1);
+                var processorEntityIndex = this.processorEntities[i].indexOf(entity);
+                this.processorEntities[i].splice(processorEntityIndex, 1);
             }
         }
         
@@ -395,8 +389,8 @@ var ECS = (function()
     ECS.EntityManager.prototype.registerProcessor = function(processor, componentNames)
     {
         this.processors.push(processor);
-        this.processorComponents[processor] = componentNames;
-        this.processorEntities[processor] = this.getEntitiesByComponents(this.processorComponents[processor]);
+        this.processorComponents.push(componentNames);
+        this.processorEntities.push(this.getEntitiesByComponents(this.processorComponents[this.processorComponents.length - 1]));
     }
     
     /**
@@ -406,9 +400,10 @@ var ECS = (function()
     */
     ECS.EntityManager.prototype.unregisterProcessor = function(processor)
     {
-        this.processors.splice(this.processors.indexOf(processor), 1);
-        delete this.processorComponents[processor];
-        delete this.processorEntities[processor];
+        var processorIndex = this.processors.indexOf(processor);
+        this.processors.splice(processorIndex, 1);
+        this.processorComponents.splice(processorIndex, 1);
+        this.processorEntities.splice(processorIndex, 1);
     }
     
     /**
@@ -418,7 +413,7 @@ var ECS = (function()
     */
     ECS.EntityManager.prototype.getEntitiesByProcessor = function(processor)
     {
-        return this.processorEntities[processor];
+        return this.processorEntities[this.processors.indexOf(processor)];
     }
     
     /**
