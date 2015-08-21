@@ -5,6 +5,37 @@ var ECS = (function()
     var ECS = {};
     
     /**
+        Function for finding the index of an element in an array.
+        
+        This function is not implemented in IE8 or below, hence this check.
+        
+        From this thread: http://stackoverflow.com/questions/143847
+    */
+    if (!Array.prototype.indexOf) 
+    {
+        Array.prototype.indexOf = function (obj, fromIndex) {
+            if (fromIndex == null) 
+            {
+                fromIndex = 0;
+            } 
+            else if (fromIndex < 0) 
+            {
+                fromIndex = Math.max(0, this.length + fromIndex);
+            }
+            
+            for (var i = fromIndex, j = this.length; i < j; i++) 
+            {
+                if (this[i] === obj)
+                {
+                    return i;
+                }
+            }
+            
+            return -1;
+        };
+    }
+    
+    /**
         Function for cloning arbirary objects.
         
         From this thread: http://stackoverflow.com/questions/728360
