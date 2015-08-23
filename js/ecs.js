@@ -40,7 +40,8 @@ var ECS = (function()
         
         From this thread: http://stackoverflow.com/questions/728360
         
-        @param {object} 
+        @param {object} obj - The object to clone.
+        @return {object} - A clone of obj.
     */
     function clone(obj) 
     {
@@ -124,6 +125,9 @@ var ECS = (function()
         
         // List of entity observers interested in created/removed entities.
         this.entityObservers = [];
+        
+        // Dictionary associating tag names with entity UIDs.
+        this.entityTags = {};
         
         // The next unique entity ID.
         this.uid = 0;
@@ -279,6 +283,15 @@ var ECS = (function()
             {
                 this.entityObservers[i].entityRemoved(entity);
             }
+            
+            // Remove any tags associated with this entity.
+            for (var tag in this.entityTags)
+            {
+                if (this.entityTags[tag] == entity)
+                {
+                    delete this.entityTags[tag];
+                }
+            }
         }
     }
     
@@ -286,6 +299,7 @@ var ECS = (function()
         Returns whether this entity is active, i.e. has been created and not removed or destroyed.
         
         @param {int} entity - The unique entity ID.
+        @return {boolean} - True if active, false if removed/destroyed/not created.
     */
     ECS.EntityManager.prototype.isActiveEntity = function(entity)
     {
@@ -296,6 +310,7 @@ var ECS = (function()
         Returns whether this entity has been removed (but not destroyed).
         
         @param {int} entity - The unique entity ID.
+        @return {boolean} - True if removed, false if active, destroyed or not created.
     */
     ECS.EntityManager.prototype.isRemovedEntity = function(entity)
     {
@@ -306,6 +321,7 @@ var ECS = (function()
         Returns whether this is an entity that has once existed but has been destroyed.
         
         @param {int} entity - The unique entity ID.
+        @return {boolean} - True if destroyed, false if active, removed or not created.
     */
     ECS.EntityManager.prototype.isDestroyedEntity = function(entity)
     {
@@ -329,6 +345,39 @@ var ECS = (function()
         }
         
         this.removedEntities = [];
+    }
+    
+    /**
+        This associates a tag with a specific entity which it can be accessed on later. Several tags can be associated with a single entity.
+        If the tag is already associated with another entity, this will rebind it to the new entity.
+        
+        @param {int} entity - The unique entity ID.
+        @param {string} tag - A name for this particular entity.
+    */
+    ECS.EntityManager.prototype.addTag = function(entity, tag)
+    {
+        this.entityTags[tag] = entity;
+    }
+    
+    /**
+        Removes a tag. The specified name will no longer be associated with any entity.
+        
+        @param {string} tag - A registered tag name.
+    */
+    ECS.EntityManager.prototype.removeTag = function(tag)
+    {
+        delete this.entityTags[tag];
+    }
+    
+    /**
+        Returns an entity by tag name. A tag name must have been associated with the entity before this call.
+        
+        @param {string} tag - A registered tag name.
+        @return {int} - An entity UID.
+    */
+    ECS.EntityManager.prototype.getEntityByTag = function(tag)
+    {
+        return this.entityTags[tag];
     }
     
     // COMPONENT METHODS //
@@ -430,7 +479,8 @@ var ECS = (function()
         Returns the component of a given type associated with this entity.
         
         @param {int} entity - The unique entity ID.
-        @param {string} componentName - The name of the component type. 
+        @param {string} componentName - The name of the component type.
+        @return {object} - Component object associated with the entity.
     */
     ECS.EntityManager.prototype.getComponent = function(entity, componentName)
     {
@@ -441,6 +491,7 @@ var ECS = (function()
         Returns all entities and their associated component data having the component type specified by componentName.
         
         @param {string} componentName - The component type required to exist on the returned entities.
+        @return {object} - Associative array from entity UID to component objects.
     */
     ECS.EntityManager.prototype.getEntitiesDataByComponent = function(componentName)
     {
@@ -451,6 +502,7 @@ var ECS = (function()
         Returns all entities having all the components specified by componentNames.
         
         @param {array} componentNames - The component types required to exist on the returned entities.
+        @return {array} - Array of entities that have all the given components.
     */
     ECS.EntityManager.prototype.getEntitiesByComponents = function(componentNames)
     {
@@ -505,6 +557,7 @@ var ECS = (function()
         Returns all entities having all the components specified by the given processor (components specified when registering).
         
         @param {object} processor - The processor instance.
+        @return {array} - Array of entities having all the components specified by the processor.
     */
     ECS.EntityManager.prototype.getEntitiesByProcessor = function(processor)
     {

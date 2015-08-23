@@ -37,6 +37,18 @@ describe('Entity', function() {
             expect(entityManager.entities).to.have.length(0);
             expect(entityManager.removedEntities).to.have.length(1);
         });
+        
+        it('should remove tags', function() {
+            var entityManager = new ECS.EntityManager();
+            var entity = entityManager.createEntity();
+            entityManager.addTag(entity, 'Camera');
+            
+            expect(entityManager.getEntityByTag('Camera')).to.equal(entity);
+            
+            entityManager.removeEntity(entity);
+            
+            expect('Camera' in entityManager.entityTags).to.equal(false);
+        });
     });
     
     describe('isActiveEntity', function() {
@@ -113,6 +125,29 @@ describe('Entity', function() {
             entityManager._destroyRemovedEntities();
             
             expect(entityManager.isDestroyedEntity(uid)).to.equal(true);
+        });
+    });
+    
+    describe('addTag', function() {
+        it('should be able to access entities by tags', function() {
+            var entityManager = new ECS.EntityManager();
+            var entity = entityManager.createEntity();
+            
+            entityManager.addTag(entity, 'Camera');
+            expect(entityManager.getEntityByTag('Camera')).to.equal(entity);
+        });
+    });
+    
+    describe('removeTag', function() {
+        it('should not be possible to access the entity by tag after tag is removed', function() {
+            var entityManager = new ECS.EntityManager();
+            var entity = entityManager.createEntity();
+            
+            entityManager.addTag(entity, 'Camera');
+            expect(entityManager.getEntityByTag('Camera')).to.equal(entity);
+            
+            entityManager.removeTag('Camera');
+            expect('Camera' in entityManager.entityTags).to.equal(false);
         });
     });
 });
