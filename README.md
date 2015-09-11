@@ -1,14 +1,15 @@
-# ecs.js 1.0.1
+An entity component framework for JavaScript used to organize game objects in game development. This library can be used for other purposes however. The library is designed to be used in browser applications however support for node.js might be considered in the future. For more information about what an entity component system is, please see this write-up: https://github.com/junkdog/artemis-odb/wiki/Introduction-to-Entity-Systems
 
-An entity component framework for JavaScript. Main features include:
-
+Main features of this library includes:
 - Processors keeping an updated list of the entities they are interested in, for fast access each frame.
 - Entity and component observers can be added to know when entities or components are added and removed.
-- Remove safety. Entities are not destroyed until after a processor is done updating, to avoid invalid references.
+- Safe removal. Removed entities are not destroyed (just flagged) until after a processor is done updating, to avoid invalid references.
 
 ## Installation
 
-Copy the file ecs.js into your document structure.
+Copy the file `js/ecs.js` into your document structure for the non-minified version.
+
+Copy the file `build/ecs.min.js` into your document structure for the minified version.
 
 ## Usage
 
@@ -53,12 +54,20 @@ component.some_data = 'Hello world';
 entityManager.update();
 ```
 
-## Compiling the documentation
+## Building and compiling the documentation
 
-Download and install jsdoc3:
+This project uses grunt for build automation and npm for dependency management. The CLI for grunt will need to be installed:
 
-`npm install -g jsdoc`
+`npm install -g grunt-cli`
 
-Compile the documentation:
+The build dependencies for the project can be installed by executing the following in the project directory:
 
-`jsdoc js/ecs.js --destination docs`
+`npm install --dev`
+
+The project can then be built (linted, tested and minified) by executing:
+
+`grunt`
+
+The documentation can be compiled by executing:
+
+`grunt jsdoc`

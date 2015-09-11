@@ -2,7 +2,7 @@ module.exports = function(grunt) {
     var config = {
         pkg: grunt.file.readJSON('package.json'),
         jshint: {
-            all: ['js/ecs.js']
+            all: ['js/*.js']
         },
         uglify: {
             options: {
@@ -20,6 +20,17 @@ module.exports = function(grunt) {
             options: {
                 run: true
             }
+        },
+        jsdoc: {
+            dist: {
+                src: ['js/*.js'],
+                options: {
+                    destination: 'docs',
+                    package: 'package.json',
+                    readme: 'README.md',
+                    tutorials: 'docs/tutorials'
+                }
+            }
         }
     };
     
@@ -28,7 +39,9 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-mocha');
     grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-jsdoc');
     
-    grunt.registerTask('default', ['jshint', 'mocha', 'uglify']);
+    grunt.registerTask('default', ['jshint', 'mocha', 'uglify', 'jsdoc']);
     grunt.registerTask('dev', ['jshint', 'mocha']);
+    
 };
