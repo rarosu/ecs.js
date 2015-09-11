@@ -14,11 +14,11 @@ module.exports = function(grunt) {
             }
         },
         mocha: {
-            test: {
-                src: ['test/index.html'],
-                options: {
-                    run: true
-                }
+            all: {
+                src: ['test/testrunner.html']
+            },
+            options: {
+                run: true
             }
         }
     };
@@ -30,5 +30,5 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-uglify');
     
     grunt.registerTask('default', ['jshint', 'mocha', 'uglify']);
-
+    grunt.registerTask('dev', ['jshint', 'mocha']);
 };

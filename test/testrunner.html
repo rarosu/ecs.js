@@ -1,0 +1,42 @@
+<!-- Test setup gist: https://gist.github.com/maicki/7781943 -->
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>ecs.js Tests</title>
+        <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
+    </head>
+    <body>
+        
+        <div id="mocha"></div>
+        <div id="messages"></div>
+        <div id="fixtures"></div>
+        <script src="../node_modules/mocha/mocha.js"></script>
+        <script src="../node_modules/chai/chai.js"></script>
+        <script src="../js/ecs.js"></script>
+        <script src="components/renderable.js"></script>
+        <script src="components/route.js"></script>
+        <script src="components/transform.js"></script>
+        <script src="processors/physics_processor.js"></script>
+        <script src="processors/rendering_processor.js"></script>
+        <script src="observers/component_observer.js"></script>
+        <script src="observers/component_observer_validity.js"></script>
+        <script src="observers/entity_observer.js"></script>
+        <script src="observers/entity_observer_validity.js"></script>
+        
+        <script>
+        mocha.setup('bdd');
+        mocha.reporter('html');
+        </script>
+        
+        <script src="component_test.js"></script>
+        <script src="entity_test.js"></script>
+        <script src="observer_test.js"></script>
+        <script src="processor_test.js"></script>
+
+        <script>
+        if (navigator.userAgent.indexOf('PhantomJS') < 0) {
+            mocha.run();
+        }
+        </script>
+    </body>
+</html>
