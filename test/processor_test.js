@@ -17,22 +17,22 @@ describe('Processor', function() {
             entityManager.registerProcessor(new RenderingProcessor(entityManager), ['Transform', 'Renderable']);
             entityManager.update();
             
-            expect(entity1 in entityManager.componentEntityTable['Transform']).to.equal(false);
-            expect(entity1 in entityManager.componentEntityTable['Transform']).to.equal(false);
-            expect(entity1 in entityManager.componentEntityTable['Renderable']).to.equal(false);
+            expect(entity1 in entityManager.componentEntityTable.Transform).to.equal(false);
+            expect(entity1 in entityManager.componentEntityTable.Transform).to.equal(false);
+            expect(entity1 in entityManager.componentEntityTable.Renderable).to.equal(false);
             
-            expect(entityManager.componentEntityTable['Transform'][entity2].x).to.equal(0);
-            expect(entityManager.componentEntityTable['Transform'][entity2].y).to.equal(0);
+            expect(entityManager.componentEntityTable.Transform[entity2].x).to.equal(0);
+            expect(entityManager.componentEntityTable.Transform[entity2].y).to.equal(0);
             
-            expect(entityManager.componentEntityTable['Renderable'][entity3].VAO).to.equal(0);
+            expect(entityManager.componentEntityTable.Renderable[entity3].VAO).to.equal(0);
             
-            expect(entityManager.componentEntityTable['Transform'][entity4].x).to.equal(10);
-            expect(entityManager.componentEntityTable['Transform'][entity4].y).to.equal(15);
-            expect(entityManager.componentEntityTable['Renderable'][entity4].VAO).to.equal(4);
+            expect(entityManager.componentEntityTable.Transform[entity4].x).to.equal(10);
+            expect(entityManager.componentEntityTable.Transform[entity4].y).to.equal(15);
+            expect(entityManager.componentEntityTable.Renderable[entity4].VAO).to.equal(4);
             
-            expect(entityManager.componentEntityTable['Transform'][entity5].x).to.equal(10);
-            expect(entityManager.componentEntityTable['Transform'][entity5].y).to.equal(15);
-            expect(entityManager.componentEntityTable['Renderable'][entity5].VAO).to.equal(4);
+            expect(entityManager.componentEntityTable.Transform[entity5].x).to.equal(10);
+            expect(entityManager.componentEntityTable.Transform[entity5].y).to.equal(15);
+            expect(entityManager.componentEntityTable.Renderable[entity5].VAO).to.equal(4);
         });
         
         it('should be able to register multiple processors at any time', function() {
@@ -69,16 +69,16 @@ describe('Processor', function() {
             entityManager.registerProcessor(processor, ['Transform', 'Renderable']);
             entityManager.update();
             
-            expect(entityManager.componentEntityTable['Transform'][entity].x).to.equal(10);
-            expect(entityManager.componentEntityTable['Transform'][entity].y).to.equal(15);
-            expect(entityManager.componentEntityTable['Renderable'][entity].VAO).to.equal(4);
+            expect(entityManager.componentEntityTable.Transform[entity].x).to.equal(10);
+            expect(entityManager.componentEntityTable.Transform[entity].y).to.equal(15);
+            expect(entityManager.componentEntityTable.Renderable[entity].VAO).to.equal(4);
             
             entityManager.unregisterProcessor(processor);
             entityManager.update();
             
-            expect(entityManager.componentEntityTable['Transform'][entity].x).to.equal(10);
-            expect(entityManager.componentEntityTable['Transform'][entity].y).to.equal(15);
-            expect(entityManager.componentEntityTable['Renderable'][entity].VAO).to.equal(4);
+            expect(entityManager.componentEntityTable.Transform[entity].x).to.equal(10);
+            expect(entityManager.componentEntityTable.Transform[entity].y).to.equal(15);
+            expect(entityManager.componentEntityTable.Renderable[entity].VAO).to.equal(4);
         });
     });
     
@@ -95,20 +95,20 @@ describe('Processor', function() {
             entityManager.registerProcessor(processor, ['Transform', 'Renderable']);
             entityManager.update();
             
-            expect(entityManager.componentEntityTable['Transform'][entity1].x).to.equal(10);
-            expect(entityManager.componentEntityTable['Transform'][entity1].y).to.equal(15);
+            expect(entityManager.componentEntityTable.Transform[entity1].x).to.equal(10);
+            expect(entityManager.componentEntityTable.Transform[entity1].y).to.equal(15);
             
-            expect(entityManager.componentEntityTable['Transform'][entity2].x).to.equal(0);
-            expect(entityManager.componentEntityTable['Transform'][entity2].y).to.equal(0);
+            expect(entityManager.componentEntityTable.Transform[entity2].x).to.equal(0);
+            expect(entityManager.componentEntityTable.Transform[entity2].y).to.equal(0);
             
             entityManager.unregisterComponent('Renderable');
             entityManager.update();
             
-            expect(entityManager.componentEntityTable['Transform'][entity1].x).to.equal(20);
-            expect(entityManager.componentEntityTable['Transform'][entity1].y).to.equal(30);
+            expect(entityManager.componentEntityTable.Transform[entity1].x).to.equal(20);
+            expect(entityManager.componentEntityTable.Transform[entity1].y).to.equal(30);
             
-            expect(entityManager.componentEntityTable['Transform'][entity2].x).to.equal(10);
-            expect(entityManager.componentEntityTable['Transform'][entity2].y).to.equal(15);
+            expect(entityManager.componentEntityTable.Transform[entity2].x).to.equal(10);
+            expect(entityManager.componentEntityTable.Transform[entity2].y).to.equal(15);
         });
         
         it('should remove all entities if the remaining aspect is empty', function() {

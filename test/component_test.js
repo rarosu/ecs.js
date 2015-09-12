@@ -33,7 +33,7 @@ describe('Component', function() {
             var entity = entityManager.createEntity();
             entityManager.addComponent(entity, 'Transform');
             
-            expect(entity in entityManager.componentEntityTable['Transform']).to.equal(true);
+            expect(entity in entityManager.componentEntityTable.Transform).to.equal(true);
         });
         
         it('should store a clone of the component type', function() {
@@ -49,7 +49,7 @@ describe('Component', function() {
             var transform = entityManager.getComponent(entity, 'Transform');
             transform.x = 10;
             
-            expect(Transform.x == 0).to.equal(true);
+            expect(Transform.x === 0).to.equal(true);
         });
     });
     
@@ -62,8 +62,8 @@ describe('Component', function() {
             var entity = entityManager.createEntity();
             entityManager.addComponents(entity, ['Transform', 'Renderable']);
             
-            expect(entity in entityManager.componentEntityTable['Transform']).to.equal(true);
-            expect(entity in entityManager.componentEntityTable['Renderable']).to.equal(true);
+            expect(entity in entityManager.componentEntityTable.Transform).to.equal(true);
+            expect(entity in entityManager.componentEntityTable.Renderable).to.equal(true);
         });
     });
     
@@ -76,12 +76,12 @@ describe('Component', function() {
             var entity = entityManager.createEntity();
             entityManager.addComponents(entity, ['Transform', 'Renderable']);
             
-            expect(entity in entityManager.componentEntityTable['Transform']).to.equal(true);
-            expect(entity in entityManager.componentEntityTable['Renderable']).to.equal(true);
+            expect(entity in entityManager.componentEntityTable.Transform).to.equal(true);
+            expect(entity in entityManager.componentEntityTable.Renderable).to.equal(true);
             
             entityManager.removeComponent(entity, 'Transform');
             
-            expect(entity in entityManager.componentEntityTable['Transform']).to.equal(false);
+            expect(entity in entityManager.componentEntityTable.Transform).to.equal(false);
         });
     });
     

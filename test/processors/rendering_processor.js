@@ -16,4 +16,4 @@ RenderingProcessor.prototype.update = function()
         transform.y += 15;
         renderable.VAO += 4;
     }
-}
+};

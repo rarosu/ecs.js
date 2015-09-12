@@ -14,4 +14,4 @@ PhysicsProcessor.prototype.update = function()
         transform.x += 10;
         transform.y += 15;
     }
-}
+};

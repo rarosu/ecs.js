@@ -24,7 +24,7 @@ describe('Entity', function() {
             
             var entity = entityManager.createEntity(['Transform']);
             
-            expect(entity in entityManager.componentEntityTable['Transform']).to.equal(true);
+            expect(entity in entityManager.componentEntityTable.Transform).to.equal(true);
         });
     });
     

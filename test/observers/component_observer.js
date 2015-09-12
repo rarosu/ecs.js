@@ -15,7 +15,7 @@ ComponentObserver.prototype.componentAdded = function(entity, componentName)
     }
     
     this.componentsAdded[entity].push(componentName);
-}
+};
 
 ComponentObserver.prototype.componentRemoved = function(entity, componentName)
 {
@@ -25,4 +25,4 @@ ComponentObserver.prototype.componentRemoved = function(entity, componentName)
     }
     
     this.componentsRemoved[entity].push(componentName);
-}
+};

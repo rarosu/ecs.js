@@ -10,7 +10,7 @@ EntityObserverValidity.prototype.entityCreated = function(entity)
     {
         expect(entity in this.entityManager.componentEntityTable[this.expectedComponentNames[i]]).to.equal(true);
     }
-}
+};
 
 EntityObserverValidity.prototype.entityRemoved = function(entity)
 {
@@ -18,4 +18,4 @@ EntityObserverValidity.prototype.entityRemoved = function(entity)
     {
         expect(entity in this.entityManager.componentEntityTable[this.expectedComponentNames[i]]).to.equal(true);
     }
-}
+};
