@@ -6,7 +6,7 @@
         <link rel="stylesheet" href="../node_modules/mocha/mocha.css" />
     </head>
     <body>
-        
+
         <div id="mocha"></div>
         <div id="messages"></div>
         <div id="fixtures"></div>
@@ -22,16 +22,24 @@
         <script src="observers/component_observer_validity.js"></script>
         <script src="observers/entity_observer.js"></script>
         <script src="observers/entity_observer_validity.js"></script>
-        
+
         <script>
         mocha.setup('bdd');
         mocha.reporter('html');
         </script>
-        
+
         <script src="component_test.js"></script>
         <script src="entity_test.js"></script>
         <script src="observer_test.js"></script>
         <script src="processor_test.js"></script>
+        <script src="filter_test.js"></script>
+
+        <!--
+        <script src="component_test.js"></script>
+        <script src="entity_test.js"></script>
+        <script src="observer_test.js"></script>
+        <script src="processor_test.js"></script>
+    -->
 
         <script>
         if (navigator.userAgent.indexOf('PhantomJS') < 0) {

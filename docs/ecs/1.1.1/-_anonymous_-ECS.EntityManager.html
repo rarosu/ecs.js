@@ -33,7 +33,7 @@
         </h2>
         
             <div class="class-description">EntityManager
-        
+
         Manages entities, components and processors.</div>
         
     
@@ -95,7 +95,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line94">line 94</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line93">line 93</a>
     </li></ul></dd>
     
 
@@ -138,88 +138,6 @@
 
     
         <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    <h4 class="name" id="_destroyRemovedEntities"><span class="type-signature"></span>_destroyRemovedEntities<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-<div class="description">
-    This method destroys all removed entities. This is called automatically before and between processor updates.
-</div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line338">line 338</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
         
             
@@ -349,7 +267,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line395">line 395</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line393">line 393</a>
     </li></ul></dd>
     
 
@@ -504,7 +422,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line643">line 643</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line646">line 646</a>
     </li></ul></dd>
     
 
@@ -658,7 +576,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line445">line 445</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line444">line 444</a>
     </li></ul></dd>
     
 
@@ -813,7 +731,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line362">line 362</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line360">line 360</a>
     </li></ul></dd>
     
 
@@ -844,7 +762,7 @@
 
     
 
-    <h4 class="name" id="createEntity"><span class="type-signature"></span>createEntity<span class="signature">(componentNames)</span><span class="type-signature"> &rarr; {int}</span></h4>
+    <h4 class="name" id="createEntity"><span class="type-signature"></span>createEntity<span class="signature">(componentNames, parentEntity)</span><span class="type-signature"> &rarr; {int}</span></h4>
 
     
 
@@ -907,6 +825,29 @@
         </tr>
 
     
+
+        <tr>
+            
+                <td class="name"><code>parentEntity</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">int</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">An entity that 'owns' this entity. When the parent is destroyed, so is the child entity.</td>
+        </tr>
+
+    
     </tbody>
 </table>
 
@@ -944,7 +885,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line221">line 221</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line210">line 210</a>
     </li></ul></dd>
     
 
@@ -972,6 +913,338 @@
         
 <div class="param-desc">
     The unique identifier of this entity.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">int</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="createEntityFilter"><span class="type-signature"></span>createEntityFilter<span class="signature">(componentNames)</span><span class="type-signature"> &rarr; {object}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Create a new entity filter subscribing to entities with a minimal set of
+        components.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>componentNames</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A set of component names that should
+        exist on filtered entities.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line574">line 574</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    - A new entity filter with componentNames and entities
+        attributes.
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="createMessage"><span class="type-signature"></span>createMessage<span class="signature">(processorEmitter, componentNames)</span><span class="type-signature"> &rarr; {int}</span></h4>
+
+    
+
+
+
+<div class="description">
+    Create a new message entity. This message will exist until the next update of processorEmitter.
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>processorEmitter</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">A registered processor instance. The message will be destroyed just before its next update.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>componentNames</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">The names of the component types that should be added to this message entity.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line249">line 249</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    The unique identifier of this message entity.
 </div>
 
 
@@ -1120,7 +1393,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line493">line 493</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line492">line 492</a>
     </li></ul></dd>
     
 
@@ -1273,7 +1546,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line515">line 515</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line503">line 503</a>
     </li></ul></dd>
     
 
@@ -1312,312 +1585,6 @@
     <dd>
         
 <span class="param-type">array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="getEntitiesByProcessor"><span class="type-signature"></span>getEntitiesByProcessor<span class="signature">(processor)</span><span class="type-signature"> &rarr; {array}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Returns all entities having all the components specified by the given processor (components specified when registering).
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>processor</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The processor instance.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line571">line 571</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    - Array of entities having all the components specified by the processor.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">array</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="getEntitiesDataByComponent"><span class="type-signature"></span>getEntitiesDataByComponent<span class="signature">(componentName)</span><span class="type-signature"> &rarr; {object}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Returns all entities and their associated component data having the component type specified by componentName.
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>componentName</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The component type required to exist on the returned entities.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line504">line 504</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    - Associative array from entity UID to component objects.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">object</span>
 
 
     </dd>
@@ -1732,7 +1699,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line383">line 383</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line381">line 381</a>
     </li></ul></dd>
     
 
@@ -1792,7 +1759,7 @@
 
 
 <div class="description">
-    Returns whether this entity is active, i.e. has been created and not removed or destroyed.
+    Returns whether this entity is active, i.e. has been created but not destroyed.
 </div>
 
 
@@ -1885,7 +1852,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line308">line 308</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line337">line 337</a>
     </li></ul></dd>
     
 
@@ -1912,7 +1879,7 @@
 
         
 <div class="param-desc">
-    - True if active, false if removed/destroyed/not created.
+    - True if active, false if destroyed or not created.
 </div>
 
 
@@ -2038,7 +2005,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line330">line 330</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line348">line 348</a>
     </li></ul></dd>
     
 
@@ -2065,160 +2032,7 @@
 
         
 <div class="param-desc">
-    - True if destroyed, false if active, removed or not created.
-</div>
-
-
-
-<dl>
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">boolean</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id="isRemovedEntity"><span class="type-signature"></span>isRemovedEntity<span class="signature">(entity)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-
-    
-
-
-
-<div class="description">
-    Returns whether this entity has been removed (but not destroyed).
-</div>
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>entity</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">int</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">The unique entity ID.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-<dl class="details">
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line319">line 319</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    - True if removed, false if active, destroyed or not created.
+    - True if destroyed, false if active or not created.
 </div>
 
 
@@ -2367,7 +2181,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line144">line 144</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line136">line 136</a>
     </li></ul></dd>
     
 
@@ -2521,7 +2335,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line618">line 618</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line622">line 622</a>
     </li></ul></dd>
     
 
@@ -2652,7 +2466,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line597">line 597</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line601">line 601</a>
     </li></ul></dd>
     
 
@@ -2683,7 +2497,7 @@
 
     
 
-    <h4 class="name" id="registerProcessor"><span class="type-signature"></span>registerProcessor<span class="signature">(processor, componentNames)</span><span class="type-signature"></span></h4>
+    <h4 class="name" id="registerProcessor"><span class="type-signature"></span>registerProcessor<span class="signature">(processor)</span><span class="type-signature"></span></h4>
 
     
 
@@ -2746,29 +2560,6 @@
         </tr>
 
     
-
-        <tr>
-            
-                <td class="name"><code>componentNames</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">array</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">An array of component names specifying what entities this processor is interested in.</td>
-        </tr>
-
-    
     </tbody>
 </table>
 
@@ -2806,7 +2597,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line545">line 545</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line532">line 532</a>
     </li></ul></dd>
     
 
@@ -2960,7 +2751,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line460">line 460</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line459">line 459</a>
     </li></ul></dd>
     
 
@@ -3115,7 +2906,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line655">line 655</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line658">line 658</a>
     </li></ul></dd>
     
 
@@ -3153,7 +2944,7 @@
 
 
 <div class="description">
-    Remove the entity with the given unique identifier. This will not destroy the entity until the current processor has finished or.
+    Remove the entity with the given unique identifier. This will immediately destroy the entity and its associated components.
 </div>
 
 
@@ -3246,7 +3037,85 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line250">line 250</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line261">line 261</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id="removeEntityFilter"><span class="type-signature"></span>removeEntityFilter<span class="signature">()</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line586">line 586</a>
     </li></ul></dd>
     
 
@@ -3377,7 +3246,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line372">line 372</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line370">line 370</a>
     </li></ul></dd>
     
 
@@ -3508,7 +3377,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line160">line 160</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line152">line 152</a>
     </li></ul></dd>
     
 
@@ -3639,7 +3508,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line629">line 629</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line633">line 633</a>
     </li></ul></dd>
     
 
@@ -3770,7 +3639,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line607">line 607</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line611">line 611</a>
     </li></ul></dd>
     
 
@@ -3901,7 +3770,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line557">line 557</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line543">line 543</a>
     </li></ul></dd>
     
 
@@ -3983,7 +3852,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line579">line 579</a>
+        <a href="ecs.js.html">ecs.js</a>, <a href="ecs.js.html#line553">line 553</a>
     </li></ul></dd>
     
 
@@ -4031,7 +3900,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.2</a> on Fri Sep 11 2015 17:37:09 GMT+0200 (W. Europe Daylight Time)
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.3</a> on Sat Nov 14 2015 12:29:30 GMT+0100 (W. Europe Standard Time)
 </footer>
 
 <script> prettyPrint(); </script>

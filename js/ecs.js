@@ -85,57 +85,6 @@ var ECS = (function()
         throw new Error("Unable to clone object. Type unsupported.");
     }
 
-    // TODO: REMOVE THIS. Filter suggestion 1.
-    // this.entityFilter = this.entityManager.createEntityFilter(['Transform', 'Renderable']);
-    // for (var entity in this.entityFilter.entities) { ... }
-    // this.entityManager.removeEntityFilter(this.entityFilter);
-    // /TODO
-
-    /*
-        TODO: REMOVE THIS. Interface suggestion.
-
-        var Transform = {};
-        var Renderable = {};
-        var InputCommand = {};
-
-        function RenderingProcessor(entityManager)
-        {
-            this.entityManager = entityManager;
-            this.entityFilter = this.entityManager.createEntityFilter(['Transform', 'Renderable']);
-            this.messageFilter = this.entityManager.createEntityFilter(['InputCommand']);
-        }
-
-        RenderingProcessor.prototype.update()
-        {
-            for (var entity in this.entityFilter.entities) { ... }
-            for (var entity in this.messageFilter.entities) { ... }
-        }
-
-        function Main()
-        {
-            this.entityManager = new ECS.EntityManager();
-
-            this.entityManager.registerComponent('Transform', Transform);
-            this.entityManager.registerComponent('Renderable', Renderable);
-            this.entityManager.registerComponent('InputCommand', InputCommand);
-
-            this.renderingProcessor = new renderingProcessor(this.entityManager);
-            this.entityManager.registerProcessor(this.renderingProcessor);
-
-            this.entity = this.entityManager.createEntity(['Transform', 'Renderable']);
-            this.message = this.entityManager.createMessage(this.renderingProcessor, ['InputCommand']);
-
-            this.childEntity = this.entityManager.createEntity(['Transform', 'Renderable'], this.entity);
-        }
-
-        Main.prototype.update = function()
-        {
-            this.entityManager.update();
-        }
-
-        /TODO
-    */
-
     /**
         @class EntityManager
 
@@ -144,7 +93,7 @@ var ECS = (function()
     ECS.EntityManager = function()
     {
         // The next unique entity ID.
-        this.entityUid = 0;
+        this.uid = 0;
 
         // List of all active entity UIDs.
         this.entities = [];
@@ -213,7 +162,7 @@ var ECS = (function()
                 this.entityFilters[i].componentNames.splice(componentIndex, 1);
 
                 // If no components remain, remove all entities from this filter since we cannot subscribe to entities without components.
-                if (this.entityFilters[i].length === 0)
+                if (this.entityFilters[i].componentNames.length === 0)
                 {
                     this.entityFilters[i].entities = [];
                 }
@@ -234,7 +183,7 @@ var ECS = (function()
         // Notify the component observers.
         for (i = 0; i < this.componentObservers.length; i++)
         {
-            if (this.componentObservers.observerComponentNames.indexOf(name) != -1)
+            if (this.componentObservers[i].observerComponentNames.indexOf(name) != -1)
             {
                 for (var entity in this.componentEntityTable[name])
                 {
@@ -265,7 +214,7 @@ var ECS = (function()
 
         // Add components to the entity.
         var i;
-        if (componentNames)
+        if (componentNames !== undefined)
         {
             for (i = 0; i < componentNames.length; i++)
             {
@@ -274,7 +223,7 @@ var ECS = (function()
         }
 
         // If a parent entity is given, add this as a child entity to it.
-        if (parentEntity)
+        if (parentEntity !== undefined)
         {
             if (!(parentEntity in this.childEntities))
                 this.childEntities[parentEntity] = [];
@@ -302,7 +251,7 @@ var ECS = (function()
         var id = this.createEntity(componentNames);
         processorEmitter.emittedMessages.push(id);
         return id;
-    }
+    };
 
     /**
         Remove the entity with the given unique identifier. This will immediately destroy the entity and its associated components.
@@ -337,7 +286,8 @@ var ECS = (function()
             }
 
             // Notify the component observers.
-            for (var componentName in this.componentEntityTable)
+            var componentName;
+            for (componentName in this.componentEntityTable)
             {
                 if (entity in this.componentEntityTable[componentName])
                 {
@@ -368,7 +318,7 @@ var ECS = (function()
 
             // Destroy the entity.
             this.entities.splice(index, 1);
-            for (var componentName in this.componentEntityTable)
+            for (componentName in this.componentEntityTable)
             {
                 if (entity in this.componentEntityTable[componentName])
                 {
@@ -478,7 +428,7 @@ var ECS = (function()
         // Notify component observers.
         for (i = 0; i < this.componentObservers.length; i++)
         {
-            if (this.componentObservers[i].componentNames.indexOf(componentName) != -1)
+            if (this.componentObservers[i].observerComponentNames.indexOf(componentName) != -1)
             {
                 this.componentObservers[i].componentAdded(entity, componentName);
             }
@@ -621,7 +571,7 @@ var ECS = (function()
         @return {object} - A new entity filter with componentNames and entities
         attributes.
     */
-    ECS.EntityManager.prototype.createEntityFilter(componentNames)
+    ECS.EntityManager.prototype.createEntityFilter = function(componentNames)
     {
         var filter = {};
         filter.componentNames = componentNames;
@@ -629,18 +579,18 @@ var ECS = (function()
         this.entityFilters.push(filter);
 
         return filter;
-    }
+    };
 
     /**
     */
-    ECS.EntityManager.prototype.removeEntityFilter(filter)
+    ECS.EntityManager.prototype.removeEntityFilter = function(filter)
     {
         var index = this.entityFilters.indexOf(filter);
         if (index != -1)
         {
             this.entityFilters.splice(index, 1);
         }
-    }
+    };
 
     // OBSERVER METHODS //
     /**
