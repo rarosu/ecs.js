@@ -282,6 +282,20 @@ describe('Observer', function() {
             var entity = entityManager.createEntity(['Transform', 'Renderable']);
             entityManager.removeEntity(entity);
         });
+		
+		it('should notify about destroyed child entities before parent entities', function() {
+			var entityManager = new ECS.EntityManager();
+            var root = entityManager.createEntity();
+            var child = entityManager.createEntity([], root);
+			
+			var entityObserver = new EntityObserver();
+			entityManager.registerEntityObserver(entityObserver);
+			
+			entityManager.removeEntity(root);
+			
+			expect(entityObserver.entitiesRemoved[0]).to.equal(child);
+			expect(entityObserver.entitiesRemoved[1]).to.equal(root);
+		});
     });
 
     describe('addComponent', function() {

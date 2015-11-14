@@ -60,14 +60,29 @@ describe('Entity', function() {
 
         it('should remove child entities as well', function() {
             var entityManager = new ECS.EntityManager();
-            var parent = entityManager.createEntity();
-            var child = entityManager.createEntity([], parent);
+            var root = entityManager.createEntity();
+            var child = entityManager.createEntity([], root);
 
-            entityManager.removeEntity(parent);
+            entityManager.removeEntity(root);
 
-            expect(entityManager.isDestroyedEntity(parent)).to.equal(true);
+            expect(entityManager.isDestroyedEntity(root)).to.equal(true);
             expect(entityManager.isDestroyedEntity(child)).to.equal(true);
         });
+		
+		it('should recursively destroy child entities', function() {
+			var entityManager = new ECS.EntityManager();
+            var root = entityManager.createEntity();
+            var child1 = entityManager.createEntity([], root);
+			var child2 = entityManager.createEntity([], root);
+			var grandchild1 = entityManager.createEntity([], child1);
+			
+			entityManager.removeEntity(root);
+			
+			expect(entityManager.isDestroyedEntity(root)).to.equal(true);
+            expect(entityManager.isDestroyedEntity(child1)).to.equal(true);
+			expect(entityManager.isDestroyedEntity(child2)).to.equal(true);
+			expect(entityManager.isDestroyedEntity(grandchild1)).to.equal(true);
+		});
     });
 
     describe('isActiveEntity', function() {

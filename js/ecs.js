@@ -543,7 +543,13 @@ var ECS = (function()
     ECS.EntityManager.prototype.unregisterProcessor = function(processor)
     {
         this.processors.splice(this.processors.indexOf(processor));
-        // TODO: Remove all messages.
+        
+		var i;
+		for (i = 0; i < processor.emittedMessages.length; i++)
+		{
+			this.removeEntity(processor.emittedMessages[i]);
+		}
+		
         delete processor.emittedMessages;
     };
 
@@ -556,7 +562,17 @@ var ECS = (function()
         for (i = 0; i < this.processors.length; i++)
         {
             var processor = this.processors[i];
-            // TODO: Remove all messages associated with this processor.
+			
+			// Remove all messages associated with this processor.
+			var k;
+			for (k = 0; k < processor.emittedMessages.length; k++)
+			{
+				this.removeEntity(processor.emittedMessages[k]);
+			}
+			
+			processor.emittedMessages = [];
+            
+			// Update the processor.
             processor.update();
         }
     };

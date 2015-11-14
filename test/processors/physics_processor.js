@@ -1,15 +1,14 @@
-function PhysicsProcessor(entityManager)
+function RenderingProcessor(entityManager)
 {
     this.entityManager = entityManager;
+	this.entityFilter = this.entityManager.createEntityFilter(['Transform']);
 }
 
-PhysicsProcessor.prototype.update = function()
+RenderingProcessor.prototype.update = function()
 {
-    var entities = this.entityManager.getEntitiesByProcessor(this);
-    
-    for (var i = 0; i < entities.length; ++i)
+    for (var i = 0; i < this.entityFilter.entities.length; ++i)
     {
-        var transform = this.entityManager.getComponent(entities[i], 'Transform');
+        var transform = this.entityFilter.entities[i].getComponent(entities[i], 'Transform');
         
         transform.x += 10;
         transform.y += 15;

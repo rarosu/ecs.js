@@ -1,18 +1,17 @@
 function RenderingProcessor(entityManager)
 {
     this.entityManager = entityManager;
+	this.entityFilter = this.entityManager.createEntityFilter(['Transform', 'Renderable']);
 }
 
 RenderingProcessor.prototype.update = function()
 {
-    var entities = this.entityManager.getEntitiesByProcessor(this);
-    
-    for (var i = 0; i < entities.length; ++i)
+    for (var i = 0; i < this.entityFilter.entities.length; ++i)
     {
-        var transform = this.entityManager.getComponent(entities[i], 'Transform');
-        var renderable = this.entityManager.getComponent(entities[i], 'Renderable');
+		var entity = this.entityFilter.entities[i];
+        var transform = this.entityManager.getComponent(entity, 'Transform');
         
-        transform.x += 10;
+		transform.x += 10;
         transform.y += 15;
         renderable.VAO += 4;
     }
