@@ -159,29 +159,96 @@ describe('Filter', function() {
 			var entityManager = new ECS.EntityManager();
             entityManager.registerComponent('Transform', Transform);
 			
+			var entity1 = entityManager.createEntity(['Transform']);
+			var entity2 = entityManager.createEntity(['Transform']);
+			var entity3 = entityManager.createEntity(['Transform']);
+			
 			var processor = {
-				entityManager: entityManager,
+				entitiesUpdatedCount: 0,
 				entityFilter: entityManager.createEntityFilter(['Transform']),
 				update: function() {
-					var entities = this.entityFilter.entities;
-					for (var i = 0; i < entities.length;) {
-						// Note that the loop indices need to be handled manually (by in this case not increasing them).
-						// The entities variable is updated automatically, but the way you index it is out of scope of the library.
-						this.entityManager.removeEntity(entities[i]);
+					for (var entity of this.entityFilter) {
+						if (this.entitiesUpdatedCount == 1) {
+							entityManager.removeEntity(entity2);
+						}
+						
+						this.entitiesUpdatedCount++;
 					}
 				}
 			};
 			
 			entityManager.registerProcessor(processor);
+			
+			entityManager.update();
+			
+			expect(entityManager.isDestroyedEntity(entity1)).to.be.false;
+			expect(entityManager.isDestroyedEntity(entity2)).to.be.true;
+			expect(entityManager.isDestroyedEntity(entity3)).to.be.false;
+			expect(processor.entitiesUpdatedCount).to.equal(3);
+		});
+		
+		it('should be possible to remove already processed entities while updating a processor', function() {
+			var entityManager = new ECS.EntityManager();
+            entityManager.registerComponent('Transform', Transform);
+			
 			var entity1 = entityManager.createEntity(['Transform']);
 			var entity2 = entityManager.createEntity(['Transform']);
 			var entity3 = entityManager.createEntity(['Transform']);
 			
+			var processor = {
+				entitiesUpdatedCount: 0,
+				entityFilter: entityManager.createEntityFilter(['Transform']),
+				update: function() {
+					for (var entity of this.entityFilter) {
+						if (this.entitiesUpdatedCount == 1) {
+							entityManager.removeEntity(entity1);
+						}
+						
+						this.entitiesUpdatedCount++;
+					}
+				}
+			};
+			
+			entityManager.registerProcessor(processor);
+			
 			entityManager.update();
 			
 			expect(entityManager.isDestroyedEntity(entity1)).to.be.true;
-			expect(entityManager.isDestroyedEntity(entity2)).to.be.true;
+			expect(entityManager.isDestroyedEntity(entity2)).to.be.false;
+			expect(entityManager.isDestroyedEntity(entity3)).to.be.false;
+			expect(processor.entitiesUpdatedCount).to.equal(3);
+		});
+		
+		it('should be possible to remove entities yet to be processed while updating a processor', function() {
+			var entityManager = new ECS.EntityManager();
+            entityManager.registerComponent('Transform', Transform);
+			
+			var entity1 = entityManager.createEntity(['Transform']);
+			var entity2 = entityManager.createEntity(['Transform']);
+			var entity3 = entityManager.createEntity(['Transform']);
+			
+			var processor = {
+				entitiesUpdatedCount: 0,
+				entityFilter: entityManager.createEntityFilter(['Transform']),
+				update: function() {
+					for (var entity of this.entityFilter) {
+						if (this.entitiesUpdatedCount == 1) {
+							entityManager.removeEntity(entity3);
+						}
+						
+						this.entitiesUpdatedCount++;
+					}
+				}
+			};
+			
+			entityManager.registerProcessor(processor);
+			
+			entityManager.update();
+			
+			expect(entityManager.isDestroyedEntity(entity1)).to.be.false;
+			expect(entityManager.isDestroyedEntity(entity2)).to.be.false;
 			expect(entityManager.isDestroyedEntity(entity3)).to.be.true;
+			expect(processor.entitiesUpdatedCount).to.equal(2);
 		});
 	});
 	

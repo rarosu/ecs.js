@@ -84,6 +84,63 @@ var ECS = (function()
 
         throw new Error("Unable to clone object. Type unsupported.");
     }
+	
+	/**
+		@class EntityFilter
+		
+		Handles a set of entities that will be updated.
+	*/
+	function EntityFilter() 
+	{
+		this.componentNames = [];
+		this.entities = [];
+		this.nextEntity = 0;
+		this.isProcessing = false;
+	};
+	
+	EntityFilter.prototype[Symbol.iterator] = function() {
+		var _this = this;
+		
+		_this.nextEntity = 0;
+		_this.isProcessing = true;
+		return {
+			/**
+				Retrieves the next entity in the filter. Can be used in code as following:
+				
+				for (var entity of entityFilter) { ... }
+				
+				Using this instead of manually looping over entities has the benefit of being resistant to entities being removed mid-process.
+				The above syntax requires a relatively new browser, but this function can be called manually as well:
+				
+				var iterator = entityFilter[Symbol.iterator]();
+				while (!(var result = iterator.next()).done)
+				{
+					var entity = result.next;
+				}
+				
+				var iterator = entityFilter.iterate();
+				while (!(var next = iterator.next()).done) {
+					var entity = next.next;
+					...
+				}
+				
+				See https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/for...of for more info about browser compatibility.
+				
+				@return {object} An object containing two properties {done, value} where value is the next entity to process.
+			*/
+			next: function() {
+				// Implements the iterator protocol specified at: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Iteration_protocols
+				if (_this.nextEntity >= _this.entities.length) 
+				{
+					_this.nextEntity = 0;
+					_this.isProcessing = false;
+					return { done: true };
+				}
+					
+				return { value: _this.entities[_this.nextEntity++] };
+			}
+		};
+	}
 
     /**
         @class EntityManager
@@ -282,6 +339,12 @@ var ECS = (function()
                 if (filterEntityIndex != -1)
                 {
                     this.entityFilters[i].entities.splice(filterEntityIndex, 1);
+					
+					// If we are currently looping through entities in an entity filter, make sure the loop index is set correctly.
+					if (this.entityFilters[i].isProcessing && filterEntityIndex < this.entityFilters[i].nextEntity)
+					{
+						this.entityFilters[i].nextEntity--;
+					}
                 }
             }
 
@@ -589,11 +652,11 @@ var ECS = (function()
     */
     ECS.EntityManager.prototype.createEntityFilter = function(componentNames)
     {
-        var filter = {};
-        filter.componentNames = componentNames;
-        filter.entities = this.getEntitiesByComponents(filter.componentNames);
-        this.entityFilters.push(filter);
-
+		var filter = new EntityFilter();
+		filter.componentNames = componentNames;
+		filter.entities = this.getEntitiesByComponents(filter.componentNames);
+		this.entityFilters.push(filter);
+		
         return filter;
     };
 
