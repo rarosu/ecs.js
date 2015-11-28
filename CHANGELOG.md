@@ -5,6 +5,8 @@
 - Changed registerProcessor interface. A component list is no longer specified.
 - Removed getEntitiesDataByComponent as it did not have much use.
 - Removed getEntitiesByProcessor. Use filters instead.
+- Entities can now have parents and when a parent entity is destroyed, all child entities and their children are destroyed (useful for composition).
+- Added a message abstraction. Use the createMessage method to create entities that will only live until the next time the emitting processor is updated. Useful for single-time events that can be processed by other processors in the same manner as entities.
 
 1.1.1
 - Updated the build system. Now using grunt for linting, testing and minification.
