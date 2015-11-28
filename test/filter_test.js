@@ -154,6 +154,35 @@ describe('Filter', function() {
             entityManager.removeEntity(entity1);
             expect(entityFilter.entities.length).to.equal(0);
         });
+		
+		it('should be possible to remove the currently processed entity while updating a processor', function() {
+			var entityManager = new ECS.EntityManager();
+            entityManager.registerComponent('Transform', Transform);
+			
+			var processor = {
+				entityManager: entityManager,
+				entityFilter: entityManager.createEntityFilter(['Transform']),
+				update: function() {
+					var entities = this.entityFilter.entities;
+					for (var i = 0; i < entities.length;) {
+						// Note that the loop indices need to be handled manually (by in this case not increasing them).
+						// The entities variable is updated automatically, but the way you index it is out of scope of the library.
+						this.entityManager.removeEntity(entities[i]);
+					}
+				}
+			};
+			
+			entityManager.registerProcessor(processor);
+			var entity1 = entityManager.createEntity(['Transform']);
+			var entity2 = entityManager.createEntity(['Transform']);
+			var entity3 = entityManager.createEntity(['Transform']);
+			
+			entityManager.update();
+			
+			expect(entityManager.isDestroyedEntity(entity1)).to.be.true;
+			expect(entityManager.isDestroyedEntity(entity2)).to.be.true;
+			expect(entityManager.isDestroyedEntity(entity3)).to.be.true;
+		});
 	});
 	
 	describe('addComponent', function() {

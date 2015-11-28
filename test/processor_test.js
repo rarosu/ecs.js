@@ -46,4 +46,22 @@ describe('Processor', function() {
 			expect(processor.emittedMessages).to.equal(undefined);
 		});
     });
+	
+	describe('update', function() {
+		it('should be updated once per frame', function() {
+			var processor = {
+				count: 0,
+				update: function() {
+					this.count++;
+				}
+			};
+			
+			var entityManager = new ECS.EntityManager();
+			entityManager.registerProcessor(processor);
+			entityManager.update();
+			expect(processor.count).to.equal(1);
+			entityManager.update();
+			expect(processor.count).to.equal(2);
+		});
+	});
 });
