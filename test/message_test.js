@@ -56,7 +56,8 @@ describe('Message', function() {
 				messagesProcessedCount: 0,
 				messageFilter: entityManager.createEntityFilter(['Transform']),
 				update: function() {
-					for (var message of this.messageFilter) {
+					for (var message = this.messageFilter.first(); message !== undefined; message = this.messageFilter.next()) {
+					//for (var message of this.messageFilter) {
 						this.messagesProcessedCount++;
 					}
 				}

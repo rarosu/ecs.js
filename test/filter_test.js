@@ -178,7 +178,10 @@ describe('Filter', function() {
 				entitiesUpdatedCount: 0,
 				entityFilter: entityManager.createEntityFilter(['Transform']),
 				update: function() {
-					for (var entity of this.entityFilter) {
+					console.log('updating');
+					for (var entity = this.entityFilter.first(); entity !== undefined; entity = this.entityFilter.next()) {
+					//for (var entity of this.entityFilter) {
+						console.log(entity);
 						if (this.entitiesUpdatedCount == 1) {
 							entityManager.removeEntity(entity2);
 						}
@@ -210,7 +213,8 @@ describe('Filter', function() {
 				entitiesUpdatedCount: 0,
 				entityFilter: entityManager.createEntityFilter(['Transform']),
 				update: function() {
-					for (var entity of this.entityFilter) {
+					//for (var entity of this.entityFilter) {
+					for (var entity = this.entityFilter.first(); entity !== undefined; entity = this.entityFilter.next()) {
 						if (this.entitiesUpdatedCount == 1) {
 							entityManager.removeEntity(entity1);
 						}
@@ -242,7 +246,8 @@ describe('Filter', function() {
 				entitiesUpdatedCount: 0,
 				entityFilter: entityManager.createEntityFilter(['Transform']),
 				update: function() {
-					for (var entity of this.entityFilter) {
+					//for (var entity of this.entityFilter) {
+					for (var entity = this.entityFilter.first(); entity !== undefined; entity = this.entityFilter.next()) {
 						if (this.entitiesUpdatedCount == 1) {
 							entityManager.removeEntity(entity3);
 						}
