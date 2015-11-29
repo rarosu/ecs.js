@@ -2,7 +2,10 @@ module.exports = function(grunt) {
     var config = {
         pkg: grunt.file.readJSON('package.json'),
         jshint: {
-            all: ['js/*.js', 'test/**/*.js']
+            all: ['js/*.js', 'test/**/*.js'],
+			options: {
+				esnext: true
+			}
         },
         uglify: {
             options: {

@@ -20,7 +20,7 @@ describe('Entity', function() {
 
         it('should be able to add components', function() {
             var entityManager = new ECS.EntityManager();
-            entityManager.registerComponent('Transform', Transform);
+            entityManager.registerComponent('Transform', {});
 
             var entity = entityManager.createEntity(['Transform']);
 
@@ -88,19 +88,19 @@ describe('Entity', function() {
     describe('isActiveEntity', function() {
         it('should be false for non-existing and destroyed entities', function() {
             var entityManager = new ECS.EntityManager();
-            var uid = entityManager.createEntity();
-            entityManager.removeEntity(uid);
+            var entity = entityManager.createEntity();
+            entityManager.removeEntity(entity);
 
             expect(entityManager.isActiveEntity("wrongtype")).to.equal(false);
             expect(entityManager.isActiveEntity(-5)).to.equal(false);
             expect(entityManager.isActiveEntity(10)).to.equal(false);
-            expect(entityManager.isActiveEntity(uid)).to.equal(false);
+            expect(entityManager.isActiveEntity(entity)).to.equal(false);
         });
 
         it('should be true for existing entities', function() {
             var entityManager = new ECS.EntityManager();
-            var uid = entityManager.createEntity();
-            expect(entityManager.isActiveEntity(uid)).to.equal(true);
+            var entity = entityManager.createEntity();
+            expect(entityManager.isActiveEntity(entity)).to.equal(true);
         });
     });
 
@@ -110,7 +110,7 @@ describe('Entity', function() {
 
             expect(entityManager.isDestroyedEntity(0)).to.equal(false);
 
-            var uid = entityManager.createEntity();
+            var entity = entityManager.createEntity();
 
             expect(entityManager.isDestroyedEntity("wrongtype")).to.equal(false);
             expect(entityManager.isDestroyedEntity(-5)).to.equal(false);
@@ -119,17 +119,17 @@ describe('Entity', function() {
 
         it('should be false for active entities', function() {
             var entityManager = new ECS.EntityManager();
-            var uid = entityManager.createEntity();
+            var entity = entityManager.createEntity();
 
-            expect(entityManager.isDestroyedEntity(uid)).to.equal(false);
+            expect(entityManager.isDestroyedEntity(entity)).to.equal(false);
         });
 
         it('should be true for destroyed entities', function() {
             var entityManager = new ECS.EntityManager();
-            var uid = entityManager.createEntity();
-            entityManager.removeEntity(uid);
+            var entity = entityManager.createEntity();
+            entityManager.removeEntity(entity);
 
-            expect(entityManager.isDestroyedEntity(uid)).to.equal(true);
+            expect(entityManager.isDestroyedEntity(entity)).to.equal(true);
         });
     });
 

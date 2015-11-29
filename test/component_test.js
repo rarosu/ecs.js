@@ -4,8 +4,8 @@ describe('Component', function() {
     describe('registerComponent', function() {
         it('should store registered component types', function() {
             var entityManager = new ECS.EntityManager();
-            entityManager.registerComponent('Transform', Transform);
-            entityManager.registerComponent('Renderable', Renderable);
+            entityManager.registerComponent('Transform', {});
+            entityManager.registerComponent('Renderable', {});
 
             expect('Transform' in entityManager.components).to.equal(true);
             expect('Renderable' in entityManager.components).to.equal(true);
@@ -15,8 +15,8 @@ describe('Component', function() {
     describe('unregisterComponent', function() {
         it('should remove stored component type', function() {
             var entityManager = new ECS.EntityManager();
-            entityManager.registerComponent('Transform', Transform);
-            entityManager.registerComponent('Renderable', Renderable);
+            entityManager.registerComponent('Transform', {});
+            entityManager.registerComponent('Renderable', {});
             entityManager.unregisterComponent('Transform');
 
             expect('Transform' in entityManager.components).to.equal(false);
@@ -27,8 +27,7 @@ describe('Component', function() {
     describe('addComponent', function() {
         it('should store the entity in the table for the component', function() {
             var entityManager = new ECS.EntityManager();
-            entityManager.registerComponent('Transform', Transform);
-            entityManager.registerComponent('Renderable', Renderable);
+            entityManager.registerComponent('Transform', {});
 
             var entity = entityManager.createEntity();
             entityManager.addComponent(entity, 'Transform');
@@ -38,26 +37,25 @@ describe('Component', function() {
 
         it('should store a clone of the component type', function() {
             var entityManager = new ECS.EntityManager();
+			var Transform = { x: 0 };
             entityManager.registerComponent('Transform', Transform);
-            entityManager.registerComponent('Renderable', Renderable);
 
             var entity = entityManager.createEntity();
             entityManager.addComponent(entity, 'Transform');
 
-            expect(entity !== Transform).to.equal(true);
-
             var transform = entityManager.getComponent(entity, 'Transform');
             transform.x = 10;
 
-            expect(Transform.x === 0).to.equal(true);
+            expect(Transform.x).to.equal(0);
+			expect(transform.x).to.equal(10);
         });
     });
 
     describe('addComponents', function() {
         it('should store the entity in the table for the components', function() {
             var entityManager = new ECS.EntityManager();
-            entityManager.registerComponent('Transform', Transform);
-            entityManager.registerComponent('Renderable', Renderable);
+            entityManager.registerComponent('Transform', {});
+            entityManager.registerComponent('Renderable', {});
 
             var entity = entityManager.createEntity();
             entityManager.addComponents(entity, ['Transform', 'Renderable']);
@@ -70,8 +68,8 @@ describe('Component', function() {
     describe('removeComponent', function() {
         it('should remove the entity from the table for the component', function() {
             var entityManager = new ECS.EntityManager();
-            entityManager.registerComponent('Transform', Transform);
-            entityManager.registerComponent('Renderable', Renderable);
+            entityManager.registerComponent('Transform', {});
+            entityManager.registerComponent('Renderable', {});
 
             var entity = entityManager.createEntity();
             entityManager.addComponents(entity, ['Transform', 'Renderable']);
@@ -88,19 +86,21 @@ describe('Component', function() {
     describe('getComponent', function() {
         it('should return a valid instance for existing components', function() {
             var entityManager = new ECS.EntityManager();
-            entityManager.registerComponent('Transform', Transform);
+            entityManager.registerComponent('Transform', {});
 
             var entity = entityManager.createEntity(['Transform']);
             var transform = entityManager.getComponent(entity, 'Transform');
+			
             expect(transform).to.not.equal(undefined);
         });
 
         it('should return undefined for entities without component', function() {
             var entityManager = new ECS.EntityManager();
-            entityManager.registerComponent('Transform', Transform);
+            entityManager.registerComponent('Transform', {});
 
             var entity = entityManager.createEntity();
             var transform = entityManager.getComponent(entity, 'Transform');
+			
             expect(transform).to.equal(undefined);
         });
     });
@@ -108,16 +108,14 @@ describe('Component', function() {
     describe('getEntitiesByComponents', function() {
         it('should return all entities with all the specified components', function() {
             var entityManager = new ECS.EntityManager();
-            entityManager.registerComponent('Transform', Transform);
-            entityManager.registerComponent('Renderable', Renderable);
+            entityManager.registerComponent('Transform', {});
+            entityManager.registerComponent('Renderable', {});
 
             var entity1 = entityManager.createEntity();
             var entity2 = entityManager.createEntity(['Transform']);
             var entity3 = entityManager.createEntity(['Renderable']);
             var entity4 = entityManager.createEntity(['Transform', 'Renderable']);
             var entity5 = entityManager.createEntity(['Transform', 'Renderable']);
-
-            console.log(entityManager);
 
             var transformEntities = entityManager.getEntitiesByComponents(['Transform']);
 

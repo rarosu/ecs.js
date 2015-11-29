@@ -96,7 +96,7 @@ var ECS = (function()
 		this.entities = [];
 		this.nextEntity = 0;
 		this.isProcessing = false;
-	};
+	}
 	
 	EntityFilter.prototype[Symbol.iterator] = function() {
 		var _this = this;
@@ -140,7 +140,7 @@ var ECS = (function()
 				return { value: _this.entities[_this.nextEntity++] };
 			}
 		};
-	}
+	};
 
     /**
         @class EntityManager
