@@ -244,7 +244,7 @@ var ECS = (function()
             {
                 for (var entity in this.componentEntityTable[name])
                 {
-                    this.componentObservers[i].componentRemoved(entity, name);
+                    this.componentObservers[i].componentRemoved(parseInt(entity, 10), name);
                 }
             }
 
@@ -358,7 +358,7 @@ var ECS = (function()
                     {
                         if (this.componentObservers[i].observerComponentNames.indexOf(componentName) != -1)
                         {
-                            this.componentObservers[i].componentRemoved(entity, componentName);
+                            this.componentObservers[i].componentRemoved(parseInt(entity, 10), componentName);
                         }
                     }
                 }
@@ -580,7 +580,7 @@ var ECS = (function()
             }
 
             if (intersecting)
-                entities.push(parseInt(entity));
+                entities.push(parseInt(entity, 10));
         }
 
         return entities;
