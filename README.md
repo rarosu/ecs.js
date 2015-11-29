@@ -34,7 +34,7 @@ function ExampleProcessor(entityManager)
 ExampleProcessor.prototype.update()
 {
 	// All entities that have the Physics component will be present in the entity filter.
-	for (var entity of this.entityFilter)
+	for (var entity = this.entityFilter.first(); entity !== undefined; entity = this.entityFilter.next())
 	{
 		var component = this.entityManager.getComponent(entity, 'Physics');
 		component.position[0] += component.velocity[0];
