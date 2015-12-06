@@ -1,6 +1,6 @@
 {
   "name": "ecs",
-  "version": "1.1.1",
+  "version": "2.0.0",
   "description": "An entity-component framework for effective game object management.",
   "keywords": [
     "entity",

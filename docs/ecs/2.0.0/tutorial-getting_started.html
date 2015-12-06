@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Tutorial: Getting started</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Tutorial: Getting started</h1>
+
+    <section>
+
+<header>
+    
+
+    <h2>Getting started</h2>
+</header>
+
+<article>
+    <p>An entity component system, as the name implies, manages entities and components. Entities are your game objects, however unlike many other architectures, no actual data is stored in the entity abstraction. An entity is a simple integer ID. The data of the game object is instead separated into components, objects that can be associated with entities. Instead of using game object hierarchies via inheritance (which can get clunky), game objects can be composed by adding different combinations of components onto entities.</p>
+<p>When game objects have been created, the entity component architecture provides a simple way of performing logic on them as well, via an abstraction called processors. A processor will subscribe to all entities that have a specific set of components and will get a list of them each update. These components are then guaranteed to be on these entities and the data in them can be modified.</p>
+<p>This tutorial will show a simple example to get you started and step through the library interface.</p>
+<p>In order to get started with ecs.js you will first need to include the file into your project. This module is not yet node.js or require.js compatible and only a script tag has been tested so far. When the module has been included, the first step is to create an entity manager:</p>
+<pre class="prettyprint source lang-javascript"><code>var entityManager = new ECS.EntityManager();</code></pre><p>The entity manager is the interface to all functionality in the library. The first thing we need to be able to use this entity manager is a few component objects:</p>
+<pre class="prettyprint source lang-javascript"><code>var PositionComponent = 
+{
+    position: [0, 0]
+};
+
+var PhysicsComponent = 
+{
+    velocity: [0, 0],
+    acceleration: [0, 0]
+};
+
+var RenderComponent = 
+{
+    vertex_buffer: 0,
+    index_buffer: 0,
+    vertex_count: 0,
+    shader_program: 0
+};
+
+entityManager.registerComponent('PositionComponent', PositionComponent);
+entityManager.registerComponent('PhysicsComponent', PhysicsComponent);
+entityManager.registerComponent('RenderComponent', RenderComponent);</code></pre><p>Note that these objects need to be registered with the entity manager; the name you choose is your choice, but no two components can have the same name. These components can be arbitrary objects with data you might want to have on game objects. Remember that you can have any combination of components on an entity, so it is usually a good idea to try to reuse components.</p>
+<p>Next up, we need to create a few actual entities:</p>
+<pre class="prettyprint source lang-javascript"><code>var entity1 = entityManager.createEntity(['PositionComponent', 'PhysicsComponent', 'RenderComponent']);
+var entity2 = entityManager.createEntity(['PositionComponent', 'RenderComponent']);
+var entity3 = entityManager.createEntity(['PositionComponent']);</code></pre><p>You can specify what components you want initially on the entities in the array parameter, however components can be added and removed from entities at a later point as well (in case, for instance, you don't want an entity to be renderer anymore). Often, we want to initialize the data on these entities. To do so, we first need to access the component we just added to it:</p>
+<pre class="prettyprint source lang-javascript"><code>var physics = entityManager.getComponent(entity1, 'PhysicsComponent');
+physics.velocity[0] = 5.5f;
+physics.acceleration[1] = 1.0f;</code></pre><p>Finally, to be able to perform logic on these entities, we need to create a processor class:</p>
+<pre class="prettyprint source lang-javascript"><code>function RenderProcessor(entityManager) 
+{
+    this.entityManager = entityManager;
+}
+
+RenderProcessor.prototype.update = function()
+{
+    var entities = this.entityManager.getEntitiesByProcessor(this);
+    for (var i = 0; i &lt; entities.length; i++)
+    {
+        var entity = entities[i];
+        var position = this.entityManager.getComponent(entity, 'PositionComponent');
+        var render = this.entityManager.getComponent(entity, 'RenderComponent');
+
+        // render the entity using the data in the position and render component objects.
+    }
+}
+
+entityManager.registerProcessor(new RenderProcessor(entityManager), ['PositionComponent', 'RenderComponent']);</code></pre><p>The update method is a required method on processors and it will be called every frame by the entity component framework as long as the following method is called every frame:</p>
+<pre class="prettyprint source"><code>entityManager.update();</code></pre><p>Every processor has a list of entities associated with them, which is accessed through <code>getEntitiesByProcessor</code>. These are guaranteed to have at least the components specified in the array sent to <code>registerProcessor</code>. Hence, we can be guaranteed that the entities we loop through in the update method has the <code>PositionComponent</code> and the <code>RenderComponent</code> which we needed to render the entities. Note that in the above case, the <code>RenderProcessor</code> would not process <code>entity3</code>, since it does not have a <code>RenderComponent</code>. It would, however, process <code>entity1</code>, since it has all the required components.</p>
+<p>Through this functionality, we can build extensible and decoupled systems for managing game objects and game logic.</p>
+</article>
+
+</section>
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="-_anonymous_-ECS.EntityManager.html">EntityManager</a></li></ul><h3>Tutorials</h3><ul><li><a href="tutorial-getting_started.html">Getting started</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.3</a> on Sun Dec 06 2015 09:55:26 GMT+0100 (W. Europe Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
