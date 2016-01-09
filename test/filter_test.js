@@ -181,7 +181,6 @@ describe('Filter', function() {
 					console.log('updating');
 					for (var entity = this.entityFilter.first(); entity !== undefined; entity = this.entityFilter.next()) {
 					//for (var entity of this.entityFilter) {
-						console.log(entity);
 						if (this.entitiesUpdatedCount == 1) {
 							entityManager.removeEntity(entity2);
 						}
