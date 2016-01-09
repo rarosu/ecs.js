@@ -69,5 +69,60 @@ describe('Message', function() {
 			entityManager.update();
 			expect(processor2.messagesProcessedCount).to.equal(1);
 		});
+		
+		it('should be possible to declare a processor after the emitting processor', function() {
+			var entityManager = new ECS.EntityManager();
+			entityManager.registerComponent('Transform', {});
+			
+			var processor1 = {
+				update: function() {
+					entityManager.createMessage(this, ['Transform']);
+				}
+			};
+			entityManager.registerProcessor(processor1);
+			
+			var processor2 = {
+				messagesProcessedCount: 0,
+				messageFilter: entityManager.createEntityFilter(['Transform']),
+				update: function() {
+					for (var message = this.messageFilter.first(); message !== undefined; message = this.messageFilter.next()) {
+					//for (var message of this.messageFilter) {
+						this.messagesProcessedCount++;
+					}
+				}
+			};
+			entityManager.registerProcessor(processor2);
+			
+			entityManager.update();
+			expect(processor2.messagesProcessedCount).to.equal(1);
+		});
+		
+		it('should be possible to declare a processor before the emitting processor', function() {
+			var entityManager = new ECS.EntityManager();
+			entityManager.registerComponent('Transform', {});
+			
+			var processor1 = {
+				messagesProcessedCount: 0,
+				messageFilter: entityManager.createEntityFilter(['Transform']),
+				update: function() {
+					for (var message = this.messageFilter.first(); message !== undefined; message = this.messageFilter.next()) {
+					//for (var message of this.messageFilter) {
+						this.messagesProcessedCount++;
+					}
+				}
+			};
+			entityManager.registerProcessor(processor1);
+			
+			var processor2 = {
+				update: function() {
+					entityManager.createMessage(this, ['Transform']);
+				}
+			};
+			entityManager.registerProcessor(processor2);
+			
+			entityManager.update();
+			entityManager.update(); // The message will be parsed the second update.
+			expect(processor1.messagesProcessedCount).to.equal(1);
+		});
 	});
 });
