@@ -86,6 +86,8 @@ var ECS = (function()
 		throw new Error("Unable to clone object. Type unsupported.");
 	}
 	
+	ECS.clone = clone;
+	
 	/**
 		@class EntityFilter
 		
