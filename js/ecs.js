@@ -1,4 +1,4 @@
-var ECS = (function()
+(function(root)
 {
     "use strict";
 
@@ -774,5 +774,14 @@ var ECS = (function()
         }
     };
 
-    return ECS;
-}());
+	// Export the module in a universal manner. Compatible with Node, AMD and browser globals.
+	if (typeof define === 'function' && define.amd !== undefined) {
+		define([], function() {
+			return ECS;
+		});
+	} else if (typeof module === 'object' && module.exports !== undefined) {
+		module.exports = ECS;
+	} else {
+		root.ECS = ECS;
+	}
+})(this);
